@@ -1,0 +1,232 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "A tower obstruction for Erdős #197: drifting near-dyadic run colourings fail (partial result)"
+  description: >-
+    Proves that a set S ⊆ ℕ containing two points u, u + d (d ≥ 1) and a tower of intervals
+    [α_k, β_k] (k ≥ 1) with α_1 ≥ u + 8d, 2α_1 − β_1 ≤ u − 16d, α_{k+1} ≥ β_k + 8·4^k·d and
+    2α_{k+1} − β_{k+1} ≤ α_k − 16·4^k·d has no enumeration without monotone 3-term arithmetic
+    progressions (Theorem R*), together with a clean special case (Corollary R0*). As a
+    consequence, for every strictly increasing sequence 1 ≤ r_0 < r_1 < … with r_{k+1}/r_k → 2,
+    neither colour class of the colouring of [r_0, ∞) by alternating runs [r_k, r_{k+1}) has such
+    an enumeration (Corollary R2*), with no assumption on the enumeration and none on the speed of
+    convergence; Kasel's dyadic partition is the case r_k = 2^k + 1. The proof builds on the
+    Lean-verified interval gadget (Theorem I) of Alex-lop/erdos-197-interval-gadget, whose module
+    is included verbatim. This is partial progress on Erdős Problem #197, which asks whether ℕ can be
+    partitioned into two such sets; that question remains open.
+  authors:
+    - "Alex Lopez"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Alex Lopez"
+
+classification:
+  arxiv: ["math.CO", "math.NT"]
+  msc2020: ["11B25", "05D10", "05A05"]
+
+sources:
+  - title: "Theorem R*, Lemma S and Corollaries R0*, R2*: a tower obstruction for permutable sets (docs/proof.md in this repository)"
+    type: original-proof
+    relationship: other
+    note: >-
+      The theorems and proofs first presented here. The argument was developed by Claude agents
+      (Claude Fable 5.1 and Claude Opus 5.5, Anthropic) and checked by three adversarial AI
+      referees over three rounds, with two repairs of corollaries that were false in degenerate
+      cases; Theorem R* itself was never changed. The refereed text is the working note
+      work/p197_m2_r2/verify_Rstar/repair1/proof.md (not included in this repository), which
+      states Lemmas W*, S, Theorem R* and Corollary R0* over ℤ. docs/proof.md is a rewrite of it
+      over ℕ; the parts it re-derives (R2* via R0* on every fourth run, the invariant (J3) of
+      Theorem R*, the steps of the proof of R0*) were not refereed, and each is mirrored by the
+      kernel-checked Lean proof. Lemma W* is Theorem I of
+      Alex-lop/erdos-197-interval-gadget pulled back along an affine map; Lemma S (five
+      overlapping blocks give a new pair, so the maximal position descends) is the new mechanism.
+  - title: "Erdős Problem #197"
+    authors:
+      - "Thomas F. Bloom"
+    contributors:
+      - name: "Paul Erdős"
+        role: "problem-proposer"
+      - name: "Ronald Graham"
+        role: "problem-proposer"
+    id: "https://www.erdosproblems.com/197"
+    type: "web page"
+    relationship: background
+  - title: "On permutations containing no long arithmetic progressions"
+    authors:
+      - "J. A. Davis"
+      - "R. C. Entringer"
+      - "R. L. Graham"
+      - "G. J. Simmons"
+    type: "article"
+    location: "Acta Arithmetica 34 (1977), 81–90"
+    relationship: background
+    note: "Shows that every enumeration of ℕ contains a monotone 3-term arithmetic progression."
+  - title: "Structural rigidity in the Erdős–Graham two-set permutation problem"
+    authors:
+      - "William Kasel"
+    id: "arXiv:2609.02939"
+    type: "preprint"
+    relationship: background
+    note: >-
+      Source of the ladder toolkit (zigzag and flood, Lemmas 23–26) behind Theorem I and of the
+      theorem that the dyadic partition fails (Theorem 21), which is the case r_k = 2^k + 1 of
+      Corollary R2* (its set S_A, the union of the blocks (2^{k-1}, 2^k] with k even, is the class
+      of odd k). Its Theorem 40 ("tower characterization") is a
+      Kőnig-compactness characterisation of the permutability of Kasel's dyadic set S_A, with a
+      uniform predecessor bound; it is a different notion of tower, and neither it nor Theorem R*
+      implies the other. Kasel's Part II notes (github Wkasel/erdos197, notes 38–40) treat
+      growing-sliver schedules, which are run colourings covered by Corollary R2*.
+  - title: "Kasel's order gadget OG(M) is infeasible for all M ≥ 16 (trureturing PR #9626)"
+    id: "https://github.com/the-omega-institute/trureturing/pull/9626"
+    type: "formalization"
+    relationship: background
+    note: >-
+      The OG(M) Lean core of the round-1 version of the tower theorem (Theorem R of the working
+      notes, with constants (2, 23)). Theorem R* replaces that core by Theorem I. No code was taken
+      from it.
+
+related_formalizations:
+  - id: "https://github.com/Alex-lop/erdos-197-interval-gadget"
+    relationship: builds-on
+    note: >-
+      Theorem I (Erdos197Interval.gadget: the anchored gadget [M, 2M + 6] is infeasible for
+      M ≥ 8) and Corollary I. Its module Erdos197Interval/Basic.lean (commit abd97641) is included
+      here verbatim, with the same namespace, and Lemma W* calls Erdos197Interval.gadget_thm.
+  - id: "https://github.com/google-deepmind/formal-conjectures/blob/5d8b04d3d41b745cc3f2f3cdd5ed04b60c500983/FormalConjectures/ErdosProblems/197.lean"
+    relationship: other
+    note: >-
+      Statement of Erdős #197 (Erdos197.erdos_197). The no-monotone-AP hypotheses and conclusions
+      of the three theorems are formal-conjectures' ¬HasMonotoneAP (Subtype.val ∘ f) 3 with the
+      definitions unfolded, since Challenge.lean may import only Mathlib. checks/fidelity.lean
+      restates the theorems with verbatim copies of the definitions.
+  - id: "https://github.com/the-omega-institute/trureturing/pull/9626"
+    relationship: other
+    note: >-
+      Lean proof that Kasel's order gadget OG(M) is infeasible for all M ≥ 16; the core of the
+      round-1 version of the tower theorem. Not used here.
+  - id: "https://github.com/Alex-lop/erdos-197-bounded-lag"
+    relationship: other
+    note: >-
+      An earlier, independent partial result on Erdős #197 from the same project (no two-set
+      solution with eventual lag ratio below 2), with the same encoding of the formal-conjectures
+      predicate.
+
+status:
+  scope: >-
+    Fully formalizes Theorem R* (Erdos197Tower.tower), Corollary R0* (Erdos197Tower.clean) and
+    the first, colouring sentence of Corollary R2* (Erdos197Tower.main_result) of docs/proof.md,
+    over ℕ, on top of Theorem I (Erdos197Interval/Basic.lean, included verbatim). The refereed
+    text states R* and R0* over ℤ; the ℤ forms follow from the ℕ forms by restricting to the
+    tower and translating it into ℕ, which is not proved in Lean. The second sentence of R2*
+    ("More generally, no set containing intervals [a_j, b_j] (j ≥ 1) with integers
+    1 ≤ a_j ≤ b_j, b_j < a_{j+1}, b_j/a_j → 2 and sup_j a_{j+1}/a_j < ∞ is permutable") is NOT
+    formalized. Erdos197Tower.drifting_sub, in
+    Erdos197Tower/Basic.lean, proves a different and weaker statement (no superset of the runs
+    of one colour is permutable); it is not a statement of Challenge.lean. It does not resolve
+    Erdős #197. Also not formalized: Lemmas W* and S for orders of arbitrary type (in Lean the
+    order is an injective ranking ℕ → ℕ, i.e. it embeds in ω), the remarks after Theorem R*
+    (finite form, AP directions, constants), Corollaries R1*, R1′* and R1″* of the refereed text
+    (mentioned in docs/proof.md Section 6), the discussion of what the theorem does and does not
+    reach (including the referee's computer check that Kasel's gm and stage-alternating teams
+    contain the blocks of Corollary I*), and the comparison with earlier work. The computer checks of the
+    referees are evidence for the informal proof and are not part of the formalization.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["Claude Fable 5.1", "Claude Opus 5.5 (claude-opus-5-5)"]
+      framework: "Claude Code"
+      tool_setup: >-
+        Claude Code agents in an unattended research run on open Erdős problems: one main session
+        plus subagents. Claude agents developed the tower argument (a round-1 version with an
+        external core, then Theorem R* with Theorem I as core), using SAT solving (CaDiCaL) and
+        exact-arithmetic checkers written in Python and C. Three adversarial referee subagents
+        checked the proof under separate lenses (proof, computation, scope) in three rounds, each
+        with its own code; two repair subagents fixed the corollaries and commentary they
+        refuted. A Claude Opus 5.5 subagent wrote the Lean proof, iterating with the Lean compiler
+        (mostly omega, linarith for the limit), and packaged this repository.
+      cost:
+        wall_time: "about 35 minutes for the Lean formalization and packaging (2026-11-05); the proof and its three rounds of refereeing took several hours earlier on 2026-11-04 and 2026-11-05"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: >-
+        The user asked Claude to attack open Erdős problems, formalize what it proves and package
+        the results. No full solution of #197 was found; this repository packages a partial
+        result. The formalization was done unattended from a written brief.
+  spend_usd: "subscription-based"
+  notes: >-
+    The mathematics was produced by Claude Fable 5.1 and Claude Opus 5.5 (Anthropic) in Claude
+    Code under the direction of Alex Lopez; the Lean code and write-up were written by Claude
+    Opus 5.5. The informal proof was verified by three adversarial AI referees (three rounds, two
+    repairs) and the Lean kernel checks all three theorems. It has not been refereed by a human.
+
+fidelity:
+  divergences: >-
+    The write-up speaks of linear orders of S of type ω; the Lean statements speak of an
+    enumeration f : ℕ ≃ S without monotone 3-term APs (formal-conjectures' predicate, unfolded),
+    which is the same notion for infinite S, and the proof uses the positions f.symm as an
+    injective ranking. Lemmas W* and S are stated in the write-up for orders of any type; in Lean
+    (witness, step) the order is an injective ranking ρ : ℕ → ℕ on S, i.e. an order that embeds
+    in ω. The refereed text states Lemmas W*, S, Theorem R* and Corollary R0* for S ⊆ ℤ;
+    docs/proof.md and the Lean statements are over Lean's ℕ = {0, 1, 2, …}, as in
+    formal-conjectures (the ℤ forms of R* and R0* follow by restricting to the tower and
+    translating it into ℕ; not proved in Lean). Hypotheses with a deficit 2α − β are
+    written without subtraction (2α_1 + 16d ≤ u + β_1, 2α_{k+1} + 16·4^k·d ≤ α_k + β_{k+1},
+    4a_{j+1} ≤ a_j + 2b_{j+1}), which is equivalent over the integers. In Corollary R2* the ratio
+    is the real number (r (k + 1) : ℝ) / r k and the colour classes are
+    {n | ∃ k, k % 2 = c ∧ r k ≤ n ∧ n < r (k + 1)} for c < 2. No other divergences known.
+
+review:
+  status: "self-assessed"
+  reviewers:
+    - "none"
+  notes: >-
+    The statements in Challenge.lean and Solution.lean were checked to elaborate to identical
+    terms (pp.all), and #print axioms reports only propext, Classical.choice and Quot.sound for
+    all three. In checks/fidelity.lean the three theorems are restated with verbatim copies of
+    formal-conjectures' HasMonotoneAP, List.IsAPOfLength and List.IsAPOfLengthWith and proved by
+    exact; that file also shows that no partition (A, B) of ℕ that colours the runs [r_k, r_{k+1})
+    by the parity of k is a witness for Erdos197.erdos_197. checks/nonvacuity.lean shows that
+    the hypotheses are not vacuous: the enumeration hypothesis, unfolded exactly as in
+    Challenge.lean, is satisfiable (hf_sat: the powers of two in increasing order), explicit
+    towers in enumerable sets satisfy every hypothesis of tower and clean except the enumeration
+    property, every colour class of a strictly increasing
+    r is enumerable, and r_k = 2^k and r_k = 2^k + k satisfy the hypotheses of main_result. The
+    informal proof survived three adversarial AI referees; it has not been refereed by a human.
+
+alignment:
+  namespace: "Erdos197Tower"
+  statements:
+    - source: "docs/proof.md, Theorem R*"
+      lean: "Erdos197Tower.tower"
+      module: "Challenge"
+      status: "proved"
+      note: >-
+        An enumeration of S is f : ℕ ≃ S with formal-conjectures' ¬HasMonotoneAP
+        (Subtype.val ∘ f) 3 unfolded, taken as hypotheses with conclusion False; the tower is
+        u, u + d ∈ S (1 ≤ d) and Set.Icc (α k) (β k) ⊆ S for 1 ≤ k, with (T1*) and (T2*) written
+        without subtraction.
+    - source: "docs/proof.md, Corollary R0*"
+      lean: "Erdos197Tower.clean"
+      module: "Challenge"
+      status: "proved"
+      note: >-
+        Intervals Set.Icc (a j) (b j) ⊆ S for all j, with 32 ≤ a 0, a 0 + 1 ≤ b 0,
+        4 * b j ≤ a (j + 1) and 4 * a (j + 1) ≤ a j + 2 * b (j + 1) (that is,
+        2a_{j+1} − b_{j+1} ≤ a_j / 2); conclusion False given an enumeration without monotone
+        3-term APs.
+    - source: "docs/proof.md, Corollary R2* (colouring form)"
+      lean: "Erdos197Tower.main_result"
+      module: "Challenge"
+      status: "proved"
+      note: >-
+        For StrictMono r with 1 ≤ r 0 and Filter.Tendsto (fun k => (r (k + 1) : ℝ) / r k)
+        Filter.atTop (nhds 2), and c < 2, there is no f : ℕ ≃
+        {n | ∃ k, k % 2 = c ∧ r k ≤ n ∧ n < r (k + 1)} with formal-conjectures'
+        ¬HasMonotoneAP (Subtype.val ∘ f) 3 (unfolded).
+
+acknowledgements: "Lean 4 and Mathlib; the formal-conjectures project for the statement of Erdős #197; W. Kasel for the ladder lemmas, the order gadget and the dyadic theorem; the trureturing project (PR #9626) for the Lean proof of Kasel's gadget conjecture; the Palomar template for the repository layout."
